@@ -53,10 +53,24 @@ try {
     exit
 }
 
+# 4. Save GCP Project ID to .env file
+Write-Host "\nStep 4: Saving GCP Project ID to .env file..." -ForegroundColor Yellow
+try {
+    $envContent = "GCP_PROJECT_ID=$PROJECT_ID"
+    $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
+    [System.IO.File]::WriteAllText(".env", $envContent, $utf8NoBomEncoding)
+    Write-Host "Successfully saved GCP Project ID to .env file" -ForegroundColor Green
+} catch {
+    Write-Host "Warning: Could not save to .env file. You may need to set the project ID manually." -ForegroundColor Yellow
+    Write-Host $_.Exception.Message -ForegroundColor Red
+}
+
 Write-Host "\n-----------------------------------------------------"
 Write-Host "GCP setup completed successfully!" -ForegroundColor Green
-Write-Host "Please update your gmail_monitor.py with the following:"
-Write-Host "GCP_PROJECT_ID = \"$PROJECT_ID\""
-Write-Host "PUB_SUB_TOPIC_ID = \"$TOPIC_ID\""
-Write-Host "PUB_SUB_SUBSCRIPTION_ID = \"$SUBSCRIPTION_ID\""
+Write-Host "The following configuration has been set up:"
+Write-Host "- GCP Project ID: $PROJECT_ID (saved to .env file)"
+Write-Host "- Pub/Sub Topic: $TOPIC_ID"
+Write-Host "- Pub/Sub Subscription: $SUBSCRIPTION_ID"
+Write-Host ""
+Write-Host "Your gmail_monitor.py will automatically load the project ID from .env"
 Write-Host "-----------------------------------------------------"

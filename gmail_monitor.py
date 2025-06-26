@@ -3,6 +3,7 @@ import json
 import os
 import time
 import argparse
+from dotenv import load_dotenv
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -12,10 +13,26 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.live import Live
 
+# Load environment variables from .env file
+load_dotenv()
+
 # --- Configuration ---
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
-# Replace with your project ID
-GCP_PROJECT_ID = "gmail-monitor-463406"
+# Load GCP Project ID from environment variable
+GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
+if not GCP_PROJECT_ID:
+    print(f"Error: GCP_PROJECT_ID not found in environment variables.")
+    print(f"Current working directory: {os.getcwd()}")
+    env_file_path = os.path.join(os.getcwd(), '.env')
+    print(f"Looking for .env file at: {env_file_path}")
+    print(f".env file exists: {os.path.exists(env_file_path)}")
+    if os.path.exists(env_file_path):
+        print("Contents of .env file:")
+        with open(env_file_path, 'r') as f:
+            print(f.read())
+    print("Please run setup_gcp.bat first or ensure the .env file is in the current directory.")
+    raise ValueError("GCP_PROJECT_ID not found in .env file. Please run setup_gcp.bat first.")
+
 # Replace with your Pub/Sub topic ID
 PUB_SUB_TOPIC_ID = "gmail-realtime-feed"
 # Replace with your Pub/Sub subscription ID

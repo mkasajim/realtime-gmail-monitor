@@ -16,30 +16,37 @@ A Python application that monitors multiple Gmail accounts in real-time using Go
 
 ## Quick Start
 
-### 1. Install Dependencies
+### 1. Setup Environment
 ```bash
-pip install -r requirements.txt
+setup_env.bat
+```
+This will create a virtual environment and install all required dependencies including `python-dotenv`.
+
+### 2. Google Cloud Project Setup (Automated)
+
+Run the automated GCP setup:
+```bash
+setup_gcp.bat
 ```
 
-### 2. Google Cloud Project Setup
+This script will:
+1. Prompt you for your Google Cloud Project ID
+2. Create a Pub/Sub topic (`gmail-realtime-feed`)
+3. Grant Gmail API permissions to publish to the topic
+4. Create a Pub/Sub subscription (`gmail-realtime-subscriber`)
+5. Save your GCP Project ID to a `.env` file
 
-1. Create a Google Cloud Project
-2. Enable the Gmail API and Pub/Sub API
-3. Create a Pub/Sub topic (e.g., `gmail-realtime-feed`)
-4. Create a Pub/Sub subscription (e.g., `gmail-realtime-subscriber`)
-5. Download OAuth 2.0 credentials as `credentials.json`
+**Prerequisites:**
+- Google Cloud Project created
+- Gmail API and Pub/Sub API enabled
+- `gcloud` CLI installed and authenticated
+- OAuth 2.0 credentials downloaded as `credentials.json`
 
-### 3. Configuration
+### 3. Account Management
 
-Edit the configuration section in `gmail_monitor.py`:
-
-```python
-# Replace with your project ID
-GCP_PROJECT_ID = "your-gmail-monitor-project"
-# Replace with your Pub/Sub topic ID
-PUB_SUB_TOPIC_ID = "gmail-realtime-feed"
-# Replace with your Pub/Sub subscription ID
-PUB_SUB_SUBSCRIPTION_ID = "gmail-realtime-subscriber"
+Use the GUI account manager to add Gmail accounts:
+```bash
+python account_manager.py
 ```
 
 ### 4. Easy Launch
@@ -111,19 +118,46 @@ Accounts are stored in `accounts_config.json`:
 - **Message ID Tracking**: Tracks the last seen message ID per account
 - **Display Deduplication**: Maintains a global set of displayed message IDs
 
+## Configuration
+
+### Environment Variables
+
+The application uses a `.env` file to store configuration:
+
+```env
+# GCP Project ID (automatically set by setup_gcp.bat)
+GCP_PROJECT_ID=your-project-id-here
+```
+
+**Note:** The `.env` file is automatically created when you run `setup_gcp.bat`. Other configuration values (Pub/Sub topic and subscription IDs) remain in the code as they are typically static for a project.
+
+### Manual Configuration
+
+If you need to manually set the GCP Project ID, create a `.env` file in the project root:
+
+```bash
+echo GCP_PROJECT_ID=your-project-id-here > .env
+```
+
 ## File Structure
 
 ```
 gmail-monitor2/
-├── credentials.json          # Global OAuth credentials (shared)
-├── gmail_monitor.py         # Main script
-├── requirements.txt         # Python dependencies
-├── token_primary.json       # OAuth tokens for primary account
-├── token_testuser1.json     # OAuth tokens for test user 1
-├── token_testuser2.json     # OAuth tokens for test user 2
-├── history_primary.txt      # Last history ID for primary account
-├── history_testuser1.txt    # Last history ID for test user 1
-└── history_testuser2.txt    # Last history ID for test user 2
+├── .env                     # Environment variables (auto-generated)
+├── .env.example            # Example environment file
+├── credentials.json         # Global OAuth credentials (shared)
+├── accounts_config.json     # Account configuration (auto-generated)
+├── gmail_monitor.py        # Main monitoring script
+├── account_manager.py      # GUI account management
+├── launcher.py             # Interactive launcher
+├── setup_env.bat           # Environment setup script
+├── setup_gcp.bat           # GCP setup launcher (batch)
+├── setup_gcp.ps1           # GCP setup script (PowerShell)
+├── requirements.txt        # Python dependencies
+├── token1.json             # OAuth tokens for account 1
+├── token2.json             # OAuth tokens for account 2
+├── history1.txt            # Last history ID for account 1
+└── history2.txt            # Last history ID for account 2
 ```
 
 ## Adding More Test Accounts

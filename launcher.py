@@ -9,6 +9,10 @@ import sys
 import subprocess
 import argparse
 
+# Ensure we're in the script's directory
+script_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_dir)
+
 def check_config_exists():
     """Check if accounts configuration file exists"""
     return os.path.exists('accounts_config.json')
