@@ -1,0 +1,8 @@
+[
+  {
+    "name": "Example Account",
+    "email": "example@gmail.com",
+    "token_file": "token1.json",
+    "history_file": "history1.txt"
+  }
+]

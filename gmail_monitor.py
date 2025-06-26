@@ -23,35 +23,30 @@ PUB_SUB_SUBSCRIPTION_ID = "gmail-realtime-subscriber"
 
 # Global credentials file (same for all accounts in the project)
 GLOBAL_CREDENTIALS_FILE = 'credentials.json'
+# JSON configuration file for accounts
+ACCOUNTS_CONFIG_FILE = 'accounts_config.json'
 
-# Multi-account configuration - only need to specify account-specific files
-ACCOUNTS_CONFIG = [
-    {
-        'name': 'Primary Account',
-        'email': 'appassistant9@gmail.com',  # Add email for identification
-        'token_file': 'token1.json',
-        'history_file': 'history1.txt'
-    },
-    # Add more test accounts here by uncommenting and modifying:
-    {
-        'name': 'Test User 1', 
-        'email': 'percysimpson330@gmail.com',  # Replace with actual test account email
-        'token_file': 'token2.json',
-        'history_file': 'history2.txt'
-    },
-    {
-        'name': 'Test User 2', 
-        'email': 'rachelbasin4@gmail.com',  # Replace with actual test account email
-        'token_file': 'token3.json',
-        'history_file': 'history3.txt'
-    },
-    # {
-    #     'name': 'Test User 3', 
-    #     'email': 'testuser3@gmail.com',  # Replace with actual test account email
-    #     'token_file': 'token_testuser3.json',
-    #     'history_file': 'history_testuser3.txt'
-    # }
-]
+def load_accounts_config():
+    """Load accounts configuration from JSON file"""
+    if os.path.exists(ACCOUNTS_CONFIG_FILE):
+        try:
+            with open(ACCOUNTS_CONFIG_FILE, 'r') as f:
+                accounts = json.load(f)
+                if accounts:
+                    return accounts
+                else:
+                    print(f"No accounts found in {ACCOUNTS_CONFIG_FILE}")
+                    return []
+        except Exception as e:
+            print(f"Error loading accounts configuration: {e}")
+            return []
+    else:
+        print(f"Accounts configuration file {ACCOUNTS_CONFIG_FILE} not found.")
+        print("Please run 'python account_manager.py' to configure your accounts.")
+        return []
+
+# Load accounts from JSON file
+ACCOUNTS_CONFIG = load_accounts_config()
 
 # Global variables to track state
 account_data = {}  # Dictionary to store data for each account
@@ -407,6 +402,21 @@ def main():
     
     if debug_mode:
         console.print("[dim]Debug mode enabled - showing verbose output[/dim]")
+
+    # Check if accounts are configured
+    if not ACCOUNTS_CONFIG:
+        console.print(Panel(
+            f"No accounts configured!\n\n"
+            f"Please run the account manager to add Gmail accounts:\n"
+            f"python account_manager.py\n\n"
+            f"The account manager will help you:\n"
+            f"• Add Gmail accounts with authentication\n"
+            f"• Manage existing accounts\n"
+            f"• Generate the required {ACCOUNTS_CONFIG_FILE} file",
+            title="❌ Configuration Required", 
+            border_style="red"
+        ))
+        return
 
     # Initialize all accounts
     for config in ACCOUNTS_CONFIG:
