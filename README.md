@@ -98,6 +98,8 @@ Accounts are stored in `accounts_config.json`:
     "history_file": "history1.txt"
   }
 ]
+```
+
 ## How It Works
 
 ### Authentication Flow
