@@ -12,6 +12,7 @@ A Python application that monitors multiple Gmail accounts in real-time using Go
 - **Rich Terminal UI**: Beautiful panels showing email details with account identification
 - **Duplicate Prevention**: Smart tracking prevents the same email from being displayed multiple times
 - **Debug Mode**: Use `--debug` flag for verbose output or run in quiet mode
+- **Auto-Restart Functionality**: Automatically restart the monitor if it crashes unexpectedly
 - **Robust Error Handling**: Graceful handling of API errors and network issues
 
 ## Quick Start
@@ -66,6 +67,88 @@ python gmail_monitor.py
 
 # Start monitoring with debug output
 python gmail_monitor.py --debug
+
+# Start monitoring with auto-restart (unlimited restarts)
+python launcher.py --auto-restart
+
+# Start monitoring with auto-restart and debug mode
+python launcher.py --auto-restart --debug
+```
+
+## Auto-Restart Functionality
+
+The Gmail Monitor now includes robust auto-restart functionality to ensure continuous monitoring even if the monitor crashes unexpectedly.
+
+### Using Auto-Restart through Launcher
+
+The interactive launcher provides several options:
+
+1. **Interactive Menu**: Choose option 4 from the main menu to configure auto-restart settings
+2. **Command Line**: Use `python launcher.py --auto-restart` for immediate auto-restart with default settings
+3. **Batch File**: Use `start_with_restart.bat` for easy Windows launching
+
+### Auto-Restart Options
+
+When using the interactive auto-restart configuration, you can choose:
+
+- **Unlimited Restarts** (Recommended): Monitor will restart indefinitely until manually stopped
+- **Limited Restarts**: Set a maximum number of restart attempts
+- **Single Run**: Run once without restart (same as normal mode)
+
+### Direct Auto-Restart Script
+
+For advanced users, you can use the standalone auto-restart script:
+
+```bash
+# Basic auto-restart (unlimited restarts, 5-second delay)
+python auto_restart_monitor.py
+
+# With debug mode
+python auto_restart_monitor.py --debug
+
+# With limited restarts (max 3 attempts)
+python auto_restart_monitor.py --max-restarts 3
+
+# With custom restart delay (10 seconds)
+python auto_restart_monitor.py --restart-delay 10
+
+# With log file for restart events
+python auto_restart_monitor.py --log-file monitor_restart.log
+
+# Windows batch file (easy launch)
+start_with_restart.bat
+```
+
+### Auto-Restart Features
+
+- **Crash Detection**: Automatically detects when the monitor exits unexpectedly
+- **Configurable Delays**: Set custom delays between restart attempts
+- **Restart Limits**: Optional maximum number of restart attempts
+- **Logging**: Optional file logging of restart events and statistics
+- **Graceful Shutdown**: Ctrl+C stops the entire restart process
+- **Runtime Statistics**: Shows total runtime and restart count when stopped
+
+### Example Auto-Restart Output
+
+```
+🔄 Starting Gmail Monitor with Auto-Restart...
+   Max restarts: Unlimited
+   Restart delay: 5 seconds
+   Debug mode: OFF
+
+Press Ctrl+C to stop the monitor completely.
+============================================================
+🚀 [14:30:15] Starting Gmail Monitor (Initial run)
+...
+❌ [14:35:22] Gmail Monitor crashed with exit code: 1
+⏳ Waiting 5 seconds before restart...
+🔄 [14:35:27] Restarting Gmail Monitor (Attempt #2)
+   Total runtime: 0:05:12
+...
+📊 Monitor Statistics:
+   Total runtime: 1:23:45
+   Restart count: 3
+👋 Gmail Monitor session ended.
 ```
 
 ## Account Management GUI
@@ -152,6 +235,8 @@ gmail-monitor2/
 ├── gmail_monitor.py        # Main monitoring script
 ├── account_manager.py      # GUI account management
 ├── launcher.py             # Interactive launcher
+├── auto_restart_monitor.py # Auto-restart wrapper script
+├── start_with_restart.bat  # Windows batch file for auto-restart
 ├── setup_env.bat           # Environment setup script
 ├── setup_gcp.bat           # GCP setup launcher (batch)
 ├── setup_gcp.ps1           # GCP setup script (PowerShell)
