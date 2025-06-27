@@ -161,3 +161,5 @@ last_history_id.txt
 accounts_config.json
 *.txt
 *.json
+*.zip
+*.exe
